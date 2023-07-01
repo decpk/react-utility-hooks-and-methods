@@ -59,13 +59,20 @@
     "dist"
   ],
   "keywords": [
+    "react-utility-hooks-and-methods",
+    "decpk",
     "react",
     "react hooks",
     "typescript",
     "track dependency change",
     "find dependency change",
     "find react hook dependency change",
-    "track react hook dependency change"
+    "track react hook dependency change",
+    "react hook dependency change",
+    "react hook dependencies change",
+    "react hook dependency changed",
+    "react hook dependencies changed",
+    "track hook dependencies changed"
   ],
   "dependencies": {
     "prop-types": "^15.7.2"
