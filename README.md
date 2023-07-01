@@ -1,161 +1,101 @@
-# React Hooks to npm boilerplate
 
-This repository is a boilerplate for creating custom React hooks and components that we can publish to NPM registry as packages.
+
+******❤❤❤Any improvement of PR is always welcome ❤❤❤️******
+
+# React utility hooks and methods
+
+This repository is to have all sort of methods and hooks that is required while development
+* **useTrackHookDepsChanged**: This is a meta hook which is responsible to track and print the deps changed of any hook. Have you ever been in a situation where you want to know why any hook gets triggered or what are the deps responsible to trigger this hook. If yes, then this hook is a life saver for you.
 
 I've put together a quick tutorial, it assumes an understanding of React, hooks and unit tests.
 
 If something is not clear, message me or raise an issue, I will explain in more detail.
 
-I've used this boilerplate to create my NPM package [https://www.npmjs.com/package/@nekogd/react-utility-hooks].
+Example: [Codesandbox](https://codesandbox.io/s/holy-dawn-njhv76?file=/src/App.tsx)
 
-## First things first
 
-Firstly, clone this repository. 
+********args********
+* Record\<string, unknown\>: an object where `key` will represents the dependency name and `value` is actual dependency
 
-Next, go over to package.json file and amend name, description and author keys.
+********Return value********
+* *Array\<unknown\>:* An array which is actual dependency. You can also use it as a dependency in any hook.
 
-The package would be served on npm as per what you have typed in the "name".
 
-You may want to use scoped naming i.e. "@myscope/use-my-hook"
-
-More info: [https://docs.npmjs.com/using-npm/scope.html]
 
 ## How we will be able to use your package
+Right now there is 1 hook `useTrackHookDepsChanged` is available
 
-It follows the common React path.
-
-Follow through the included useCounter example and you will be fine.
-
-Make sure to export your hook (I prefer named exports) in index.ts.
-
-Basically you have to do three things:
-
-a) write your hook (preferably test and type it)
-
-b) export it in index.ts file
-
-c) deploy to NPM
-
-We will able to use your hook like so:
-
+####  **useTrackHookDepsChanged**: 
+* Import useTrackHookDepsChanged hook into your component
 ```
- import { useYourHook } from 'your-package-name'
+import { useTrackHookDepsChanged } from '@decpk/react-utility-hooks-and-methods';
 ```
 
-## Development commands
+* collect `deps` after calling `useTrackHookDepsChanged` with `key-value` pair of deps in an **object** (Pass props as an object).
 
+***Example 1: Let say you have dependency array of 3 value which are properties of an object as:***
 ```
- // watch
- yarn start
+  useEffect(() => {
+    async function callAPI() {
+      const res = await fetch(
+        // ANY CODE
+    }
 
- // or
- npm run start
-```
-
-```
- // builds the dist folder
- yarn build
-
- // or
- npm run build
-```
-
-```
- // starts tests
- yarn test
-
- // or
-
- npm run test
+    callAPI();
+  }, [
+        pagination.limit,
+        pagination.skip,
+        pagination.selectedCategories
+    ]
+);
 ```
 
-## Local testing and yarn link
-
-To locally test the package, do the following:
-
-Let's assume your package name is "use-my-counter" and your CRA is "my-app".
-
-Let's also assume they are in one workspace.
+So we have to pass this `deps` to `useTrackHookDepsChanged` as:
 
 ```
-workspace
-  - use-my-counter
-  - my-app
+  // CHANGE
+  const deps = useTrackHookDepsChanged({
+    limit: pagination.limit,
+    skip: pagination.skip,
+    selectedCategories: pagination.selectedCategories,
+  });
 ```
 
-a) in hook folder, run
-```
-yarn link
-```
-b) assuming you have a workspace, create a sample CRA app 
-```
-npx create-react-app my-app
-```
-c) navigate to your CRA app folder
-```
-cd my-app
-```
-d) run command
-```
- yarn link use-my-counter
-```
-e)  In your CRA app, you can now user package, as it's linked locally 
-```
-  import { useMyCounter } from 'use-my-counter';
-```
-
-f) However, this will give you an error due to different copy of React and in CRA app. 
-   To counter that let's assume that we have workspace
-```
-workspace
-  - use-my-counter
-  - my-app
-```
-  We navigate to use-my-counter and type (this will link the React versions locally). 
-  
-  Please amend the path to your needs.
-  ```
-   npm link ../my-app/node_modules/react
-  ```
-  We should be good to go to work locally. 
-
-## Deployment to NPM
-
-### Login to correct NPM account
+* `useTrackHookDepsChanged` will give you `deps` that you can use it in any hook as:
 
 ```
-npm login
+useEffect(() => {
+    async function callAPI() {
+        // ANY CODE
+    }
+
+    callAPI();
+    
+    // CHANGE
+  }, deps);
 ```
 
-### Versioning
-
-Increase the version number as per NPM guides [https://docs.npmjs.com/about-semantic-versioning].
+***example 2: If you have dependency array as varable that represent value then you can make it even concise as:***
 
 ```
-// increases the first digit i.e. from 0.5.4 to 1.0.0
-npm version major
-
-// increases the second digit i.e. from 0.0.3 to 0.1.0
-npm version minor
-
-// increases the third digit i.e. from 0.0.1 to 0.0.2
-npm version patch
+useEffect(() => {
+    // ANY CODE
+  }, [name, searchString]))
 ```
 
-### Deployment
-
-Run the command and the package should be up.
+then you can make it concise as:
 
 ```
-npm publish --access public
+  useEffect(() => {
+    // ANY CODE
+  }, useTrackHookDepsChanged({ name, searchString }))
 ```
 
-### What If I want to export a component? 
 
-You can do that too, following same pattern as you'd with hooks.
 
-Bear in mind you'd propably need .tsx file and not .ts.
-
-### Share with the world
-
-Share your work and learnings with the world! :)
+* So everything is set. All you have to do it open console and see table which will tell you which dependency changed as:
+    * key: dependency changed
+    * oldValue: value before hook changed
+    * newValue: value after hook changed
+    * oldValueType: type of value before hook changed
+    * newValueType: type of value after hook changed
