@@ -11,7 +11,7 @@ type TFlow = {
 
 type TTimeTakenByFnExecutionReturnValue = {
   data: unknown;
-  flow?: TFlow;
+  flow: TFlow;
 };
 
 type TPrintOnConsoleOptions = {
